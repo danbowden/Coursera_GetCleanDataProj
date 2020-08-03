@@ -60,3 +60,7 @@ tidy1_data <- cbind(subject_total, y_total, X_total_mean_std)
 
 tidy2_summary <- aggregate(.~subject+body_activity, tidy1_data, mean)
 tidy2_summary <- arrange(tidy2_summary, subject, body_activity, by_group = TRUE)
+
+
+##### Output to table
+write.table(tidy2_summary, file="tidy2_summary.txt", row.names = FALSE)
