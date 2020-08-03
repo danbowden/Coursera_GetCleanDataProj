@@ -9,3 +9,47 @@
 ## 5 From the data set in step 4, creates a second, independent tidy data set 
 ##       with the average of each variable for each activity and each subject.
 
+
+
+##### 1 merge training and test sets
+
+## read in train and test sets
+X_train <- read.table("data/UCI HAR Dataset/train/X_train.txt")
+y_train <- read.table("data/UCI HAR Dataset/train/y_train.txt")
+X_test <- read.table("data/UCI HAR Dataset/test/X_test.txt")
+y_test <- read.table("data/UCI HAR Dataset/test/y_test.txt")
+
+
+## add feature names to X datasets
+feature_labels <- read.table("data/UCI HAR Dataset/features.txt")
+
+## merge train and test together
+X_total <- rbind(X_train, X_test)
+y_total <- rbind(y_train, y_test)
+
+#add column names from features
+colnames(X_total) <- make.names(feature_labels[,2])
+colnames(y_total) <- c("est_body_acc")
+
+### 2 subset the columns to only be the mean or std
+X_total_mean_std <- X_total[,grepl("mean|std", names(X_total)) ]
+
+
+# read in the subjects
+subject_test <- read.table("data/UCI HAR Dataset/test/subject_test.txt")
+subject_train <- read.table("data/UCI HAR Dataset/train/subject_train.txt")
+subject_total <- rbind(subject_train, subject_test)
+colnames(subject_total) <- c("subject")
+
+###### Number 4
+# merge X, Y, and subjects to one tidy dataset (first tidy set)
+tidy1_data <- cbind(subject_total, y_total, X_total_mean_std)
+
+
+
+########### Number 5
+## 5 From the data set in step 4, creates a second, independent tidy data set 
+##       with the average of each variable for each activity and each subject.
+
+tidy2_summary <- aggregate(tidy1_data[, 3:81], list(tidy1_data$subject), mean)
+colnames(tidy2_summary)[1] <- "subject"
